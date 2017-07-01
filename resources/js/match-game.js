@@ -36,8 +36,6 @@ MatchGame.generateCardValues = function() {
 */
 
 MatchGame.renderCards = function(cardValues, $game) {
-
-
   $game.empty();
 
   var cardColors = ["hsl(25,85%,65%)", "hsl(55,85%,65%)", "hsl(90,85%,65%)", "hsl(160,85%,65%)", "hsl(220,85%,65%)", "hsl(265,85%,65%)", "hsl(310,85%,65%)", "hsl(360,85%,65%)"];
@@ -52,10 +50,10 @@ MatchGame.renderCards = function(cardValues, $game) {
     $game.append($card);
   }
 
-// LIstener for when a card is clicked
-  $card.on('click', MatchGame.flipCard($card,'#game'))
-
-
+  // LIstener for when a card is clicked
+  $('.card').on('click', (function() {
+    MatchGame.flipCard($card, $game);
+  }))
 }
 
 /*
@@ -70,15 +68,15 @@ MatchGame.flipCard = function($card, $game) {
   // Flip the Card if the card has not already been flipped
 
 
-  if ($card.data('flipped') === true) {
-    // The card has already been flipped, do nothing to that card.
-    return;
-  } else {
-// When a is flipped, show the characteristics of the flipped card.
+  if ($card.data('flipped') !== true) {
+    // Check is the card is face down, and show the characteristics of the flipped card.
     $card.css('background-color', $card.data('color'));
     $card.text($card.data('value'));
     $card.data('flipped', true);
-    flippedCards.push();
+    flippedCards.push($card);
+  } else {
+    // The card has already been flipped, do nothing to that card.
+    return
   }
 
   // Check if the game has 2 flipped cards
@@ -96,6 +94,8 @@ MatchGame.flipCard = function($card, $game) {
       $card.data('flipped', false);
       flippedCards.empty();
     }
+  } else {
+
   }
 
 }
