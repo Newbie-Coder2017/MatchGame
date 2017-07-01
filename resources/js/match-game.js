@@ -46,12 +46,13 @@ MatchGame.renderCards = function(cardValues, $game) {
     $card.data('value', value);
     $card.data('flipped', false);
     $card.data('color', cardColors[value - 1]);
-    //    console.log($card);
     $game.append($card);
+    print($card);
   }
 
   // LIstener for when a card is clicked
   $('.card').on('click', (function() {
+    $card = (this);
     MatchGame.flipCard($card, $game);
   }))
 }
