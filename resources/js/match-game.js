@@ -1,34 +1,33 @@
-$(document).ready;
-var MatchGame = {
-};
+var MatchGame = {}
 
 /*
   Sets up a new game after HTML document has loaded.
   Renders a 4x4 board of cards.
 */
-$ MatchGame.generateCardValues();
-$ MatchGame.rendercards(CardValues, '#game');
 
+$(document).ready(function() {
+  MatchGame.renderCards(MatchGame.generateCardValues(), $('#game'))
+});
 
 
 /*
   Generates and returns an array of matching card values.
  */
 
-MatchGame.generateCardValues = function () {
-var cardValues = [];
-for (var i = 1; i < 9; i++) {
-  cardValues.push(i);
-  cardValues.push(i);
-}
-console.log(cardValues);
+MatchGame.generateCardValues = function() {
+  var cardValues = [];
+  for (var i = 1; i < 9; i++) {
+    cardValues.push(i);
+    cardValues.push(i);
+  }
+  console.log(cardValues);
 
-cardValues.sort(function(){
-  return 0.5- Math.random();
-});
+  cardValues.sort(function() {
+    return 0.5 - Math.random();
+  })
 
-console.log(cardValues);
-return cardValues;
+  console.log(cardValues);
+  return cardValues;
 }
 
 /*
@@ -37,18 +36,27 @@ return cardValues;
 */
 
 MatchGame.renderCards = function(cardValues, $game) {
-var cardColors = ['hsl(25,85%,65%)','hsl(55,85%,65%)','hsl(90,85%,65%)','hsl(160,85%,65%)','hsl(220,85%,65%)','hsl(265,85%,65%)','hsl(310,85%,65%)','hsl(360,85%,65%)']
-$game.empty();
-for (var i = 0; i <= cardValues.length; i++){
-var cardNumber = cardValues[i];
-var card = $('<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" id="game"></div>');
-card.data("number", cardNumber);
-card.data("flipped",false);
-card.data("color", cardColors[i-1]);
-card.append($game);
+
+
+  $game.empty();
+
+  var cardColors = ["hsl(25,85%,65%)", "hsl(55,85%,65%)", "hsl(90,85%,65%)", "hsl(160,85%,65%)", "hsl(220,85%,65%)", "hsl(265,85%,65%)", "hsl(310,85%,65%)", "hsl(360,85%,65%)"];
+  var totalCards = cardValues.length;
+  for (i = 0; i < totalCards; i++) {
+    var value = cardValues[i];
+    var $card = $('<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 card"></div>');
+    $card.data('value', value);
+    $card.data('flipped', false);
+    $card.data('color', cardColors[value - 1]);
+    //    console.log($card);
+    $game.append($card);
+  }
+
+// LIstener for when a card is clicked
+  $card.on('click', MatchGame.flipCard($card,'#game'))
+
 
 }
-};
 
 /*
   Flips over a given card and checks to see if two cards are flipped over.
@@ -56,5 +64,38 @@ card.append($game);
  */
 
 MatchGame.flipCard = function($card, $game) {
+  var flippedCards = [];
+  // $game.data('revealed', flippedCards);
 
-};
+  // Flip the Card if the card has not already been flipped
+
+
+  if ($card.data('flipped') === true) {
+    // The card has already been flipped, do nothing to that card.
+    return;
+  } else {
+// When a is flipped, show the characteristics of the flipped card.
+    $card.css('background-color', $card.data('color'));
+    $card.text($card.data('value'));
+    $card.data('flipped', true);
+    flippedCards.push();
+  }
+
+  // Check if the game has 2 flipped cards
+
+  if (flippedCards.length === 2) {
+    var value1 = flippedCards[0];
+    var value2 = flippedCards[1];
+    if (value1 === value2) {
+      $card.css('background-color', 'rgb(153,153,153)');
+      $card.css('color', 'rgb(204,204,204)');
+      flippedCards.empty();
+    } else {
+      $card.css('background-color', 'rgb(32, 64, 86)');
+      $card.text(' ');
+      $card.data('flipped', false);
+      flippedCards.empty();
+    }
+  }
+
+}
