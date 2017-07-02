@@ -36,6 +36,8 @@ MatchGame.generateCardValues = function() {
 */
 
 MatchGame.renderCards = function(cardValues, $game) {
+
+  $game.data('revealed', flippedCards = []);
   $game.empty();
 
   var cardColors = ["hsl(25,85%,65%)", "hsl(55,85%,65%)", "hsl(90,85%,65%)", "hsl(160,85%,65%)", "hsl(220,85%,65%)", "hsl(265,85%,65%)", "hsl(310,85%,65%)", "hsl(360,85%,65%)"];
@@ -51,8 +53,7 @@ MatchGame.renderCards = function(cardValues, $game) {
 
   // LIstener for when a card is clicked
   $('.card').on('click', (function() {
-    MatchGame.flipCard($card, $game);
-
+    MatchGame.flipCard($(this), $game);
   }))
 }
 
@@ -62,34 +63,44 @@ MatchGame.renderCards = function(cardValues, $game) {
  */
 
 MatchGame.flipCard = function($card, $game) {
-  var flippedCards = [];
-  $game.data('revealed', flippedCards);
-
   // Flip the Card if the card has not already been flipped
-
-
   if ($card.data('flipped') !== true) {
     // Check is the card is face down, and show the characteristics of the flipped card.
-    flippedCards.push($card.data('value'));
     $card.css('background-color', $card.data('color'));
     $card.text($card.data('value'));
     $card.data('flipped', true);
-  } else {
-    // The card has already been flipped, do nothing to that card.
-    if (flippedCards.length === 2) {
-        // Check if the game has 2 flipped cards
-      if (flippedCards[0] === flippedCards[1]) {
-        $card.css('background-color', 'rgb(153,153,153)');
-        $card.css('color', 'rgb(204,204,204)');
-      } else {
-        $card.css('background-color', 'rgb(32, 64, 86)');
-        $card.text(' ');
-        $card.data('flipped', false);
-      }
-      $game.data('revealed', []);
+
+  flippedCards.push($card);
+
+  if (flippedCards.length === 2) {
+    // Check if the game has 2 flipped cards
+    var $card1 = flippedCards[0];
+    var $card2 = flippedCards[1];
+    if ($card1.data('value') === $card2.data('value')) {
+      // Change the appearance of the matching cards
+      $card1.css('background-color', 'rgb(153,153,153)');
+      $card1.css('color', 'rgb(204,204,204)');
+      $card2.css('background-color', 'rgb(153,153,153)');
+      $card2.css('color', 'rgb(204,204,204)');
+        $game.data('revealed',flippedCards=[]);
     } else {
+      // Return the unmatched cards to a FaceDown positon
+    setTimeout(function () {
+      $card1.css('background-color', 'rgb(32, 64, 86)');
+      $card1.css('color', 'rgb(255, 255, 255)');
+      $card1.data('flipped', false);
+      $card1.text('');
+      $card2.css('background-color', 'rgb(32, 64, 86)');
+      $card2.css('color', 'rgb(255, 255, 255)');
+      $card2.data('flipped', false);
+        $card2.text('');
+        $game.data('revealed', flippedCards=[]);
+    },500);
 
     }
   }
+  }
+
+
 
 }
