@@ -51,7 +51,7 @@ MatchGame.renderCards = function(cardValues, $game) {
     $game.append($card);
   }
 
-  // LIstener for when a card is clicked
+  // Listener for when a card is clicked, run the flipCard function
   $('.card').on('click', (function() {
     MatchGame.flipCard($(this), $game);
   }))
